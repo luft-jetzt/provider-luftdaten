@@ -29,9 +29,9 @@ class Value
 
     /**
      * @JMS\Expose
-     * @JMS\Type("string")
+     * @JMS\Type("int")
      */
-    protected string $pollutant;
+    protected int $pollutant;
 
     public function __construct()
     {
@@ -74,12 +74,12 @@ class Value
         return $this;
     }
 
-    public function getPollutant(): string
+    public function getPollutant(): int
     {
         return $this->pollutant;
     }
 
-    public function setPollutant(string $pollutant): Value
+    public function setPollutant(int $pollutant): Value
     {
         $this->pollutant = $pollutant;
 

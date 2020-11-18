@@ -55,9 +55,9 @@ class JsonParser implements JsonParserInterface
             $value->setValue((float) $sensorDataValue->value);
 
             if ($sensorDataValue->value_type === 'P1') {
-                $value->setPollutant('pm10');
+                $value->setPollutant(1);
             } elseif ($sensorDataValue->value_type === 'P2') {
-                $value->setPollutant('pm25');
+                $value->setPollutant(6);
             } else {
                 continue;
             }
