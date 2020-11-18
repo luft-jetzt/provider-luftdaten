@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Api\ValueApiInterface;
+use App\Model\Value;
 use App\SourceFetcher\SourceFetcherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -45,6 +46,17 @@ class LuftFetchCommand extends Command
         $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
 
         $this->valueApi->putValues($valueList);
+
+        if ($output->isVerbose()) {
+            $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant'], array_map(function (Value $value) {
+                return [
+                    $value->getStationCode(),
+                    $value->getDateTime()->format('Y-m-d H:i:s'),
+                    $value->getValue(),
+                    $value->getPollutant()
+                ];
+            }, $valueList));
+        }
 
         $io->success(sprintf('Send %d values to Luft api', count($valueList)));
 
