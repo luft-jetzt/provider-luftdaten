@@ -4,5 +4,5 @@ namespace App\Parser;
 
 interface JsonParserInterface
 {
-    public function parse(array $data): array;
+    public function parse(string $data): array;
 }

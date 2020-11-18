@@ -2,30 +2,38 @@
 
 namespace App\Parser;
 
-use App\Air\Measurement\MeasurementInterface;
-use App\Pollution\Pollutant\PollutantInterface;
-use App\Pollution\Value\Value;
+use App\Model\Value;
+use JMS\Serializer\SerializerInterface;
 
 class JsonParser implements JsonParserInterface
 {
-    protected $stationList = [];
+    protected array $stationList = [];
 
-    public function parse(array $dataList): array
+    protected SerializerInterface $serializer;
+
+    public function __construct(SerializerInterface $serializer)
     {
+        $this->serializer = $serializer;
+    }
+
+    public function parse(string $dataString): array
+    {
+        $dataList = json_decode($dataString);
+
         $valueList = [];
 
         foreach ($dataList as $data) {
             try {
                 $stationCode = sprintf('LFTDTN%d', $data->location->id);
 
-                $dateTime = new \DateTimeImmutable($data->timestamp);
+                $dateTime = new \DateTime($data->timestamp);
 
                 $newValueList = $this->getValues($data->sensordatavalues);
 
                 /** @var Value $value */
                 foreach ($newValueList as $value) {
                     $value
-                        ->setStation($stationCode)
+                        ->setStationCode($stationCode)
                         ->setDateTime($dateTime);
                 }
 
@@ -44,12 +52,12 @@ class JsonParser implements JsonParserInterface
 
         foreach ($sensorDataValues as $sensorDataValue) {
             $value = new Value();
-            $value->setValue(floatval($sensorDataValue->value));
+            $value->setValue((float) $sensorDataValue->value);
 
             if ($sensorDataValue->value_type === 'P1') {
-                $value->setPollutant(MeasurementInterface::MEASUREMENT_PM10);
+                $value->setPollutant('pm10');
             } elseif ($sensorDataValue->value_type === 'P2') {
-                $value->setPollutant(MeasurementInterface::MEASUREMENT_PM25);
+                $value->setPollutant('pm25');
             } else {
                 continue;
             }
