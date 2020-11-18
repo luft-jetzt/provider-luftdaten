@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Api\ValueApiInterface;
 use App\SourceFetcher\SourceFetcherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,9 +17,12 @@ class LuftFetchCommand extends Command
 
     protected SourceFetcherInterface $sourceFetcher;
 
-    public function __construct(string $name = null, SourceFetcherInterface $sourceFetcher)
+    protected ValueApiInterface $valueApi;
+
+    public function __construct(string $name = null, SourceFetcherInterface $sourceFetcher, ValueApiInterface $valueApi)
     {
         $this->sourceFetcher = $sourceFetcher;
+        $this->valueApi = $valueApi;
 
         parent::__construct($name);
     }
@@ -36,7 +40,9 @@ class LuftFetchCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        dump($this->sourceFetcher->fetch());
+        $valueList = $this->sourceFetcher->fetch();
+
+        $this->valueApi->putValues($valueList);
 
         return Command::SUCCESS;
     }
