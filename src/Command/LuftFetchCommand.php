@@ -42,7 +42,11 @@ class LuftFetchCommand extends Command
 
         $valueList = $this->sourceFetcher->fetch();
 
+        $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
+
         $this->valueApi->putValues($valueList);
+
+        $io->success(sprintf('Send %d values to Luft api', count($valueList)));
 
         return Command::SUCCESS;
     }
