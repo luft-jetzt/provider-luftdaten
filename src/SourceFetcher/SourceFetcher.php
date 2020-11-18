@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider\Luftdaten\SourceFetcher;
+namespace App\SourceFetcher;
 
 use App\Pollution\Value\Value;
 use App\Producer\Value\ValueProducerInterface;
