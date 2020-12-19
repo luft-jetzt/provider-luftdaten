@@ -2,7 +2,7 @@
 
 namespace App\Parser;
 
-use App\Model\Value;
+use Caldera\LuftApiBundle\Model\Value;
 use JMS\Serializer\SerializerInterface;
 
 class JsonParser implements JsonParserInterface

@@ -2,9 +2,9 @@
 
 namespace App\Command;
 
-use App\Api\ValueApiInterface;
-use App\Model\Value;
 use App\SourceFetcher\SourceFetcherInterface;
+use Caldera\LuftApiBundle\Api\ValueApiInterface;
+use Caldera\LuftApiBundle\Model\Value;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
