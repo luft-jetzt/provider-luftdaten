@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ef69c375b49a965c67cf9ed9e5301e6",
+    "content-hash": "090c908c20e113af5636f53d4eb9297b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -698,6 +698,45 @@
                 }
             ],
             "time": "2020-06-28T11:26:21+00:00"
+        },
+        {
+            "name": "luft-jetzt/luft-api-bundle",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/luft-jetzt/luft-api-bundle.git",
+                "reference": "7a60ab24c1f2ef01ffd1f5e7510009cd13b6d022"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/luft-jetzt/luft-api-bundle/zipball/7a60ab24c1f2ef01ffd1f5e7510009cd13b6d022",
+                "reference": "7a60ab24c1f2ef01ffd1f5e7510009cd13b6d022",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.2",
+                "jms/serializer-bundle": "^3.7",
+                "symfony/framework-bundle": "^5.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Caldera\\LuftApiBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Malte Huebner",
+                    "email": "maltehuebner@gmx.org"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/luft-jetzt/luft-api-bundle/issues",
+                "source": "https://github.com/luft-jetzt/luft-api-bundle/tree/main"
+            },
+            "time": "2020-12-19T00:56:36+00:00"
         },
         {
             "name": "psr/cache",
@@ -3585,8 +3624,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
+    "minimum-stability": "alpha",
+    "stability-flags": {
+        "luft-jetzt/luft-api-bundle": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
