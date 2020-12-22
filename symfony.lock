@@ -49,6 +49,9 @@
             "config/packages/prod/jms_serializer.yaml"
         ]
     },
+    "league/csv": {
+        "version": "9.6.2"
+    },
     "luft-jetzt/luft-api-bundle": {
         "version": "dev-main"
     },
