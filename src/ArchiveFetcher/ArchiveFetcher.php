@@ -1,29 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider\Luftdaten\SourceFetcher\ArchiveFetcher;
+namespace App\ArchiveFetcher;
 
-use App\Provider\Luftdaten\SourceFetcher\ArchiveSourceFetcherInterface;
-use App\Provider\Luftdaten\SourceFetcher\Parser\CsvParserInterface;
-use Curl\Curl;
+use App\Parser\CsvParserInterface;
+use GuzzleHttp\Client;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
 {
-    /** @var Curl $curl */
-    protected $curl;
+    protected Client $client;
+    protected array $csvLinkList = [];
+    protected CsvParserInterface $csvParser;
 
-    /** @var array $csvLinkList */
-    protected $csvLinkList = [];
-
-    /** @var CsvParserInterface $csvParser */
-    protected $csvParser;
-
-    /** @var ArchiveSourceFetcherInterface $archiveSourceFetcher */
-    protected $archiveSourceFetcher;
-
-    public function __construct(CsvParserInterface $csvParser, ArchiveSourceFetcherInterface $archiveSourceFetcher)
+    public function __construct(CsvParserInterface $csvParser)
     {
         $this->csvParser = $csvParser;
-        $this->archiveSourceFetcher = $archiveSourceFetcher;
+        $this->client = new Client();
     }
 
     protected function checkSensorName(string $csvFilename): bool
@@ -75,5 +66,12 @@ class ArchiveFetcher implements ArchiveFetcherInterface
         }
 
         return $valueList;
+    }
+
+    protected function query(): string
+    {
+        $result = $this->client->get('https://api.luftdaten.info/static/v2/data.dust.min.json');
+
+        return $result->getBody()->getContents();
     }
 }

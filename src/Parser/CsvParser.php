@@ -1,10 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider\Luftdaten\SourceFetcher\Parser;
-
-use App\Pollution\Pollutant\PollutantInterface;
-use App\Pollution\Value\Value;
-use League\Csv\Reader;
+namespace App\Parser;
 
 class CsvParser implements CsvParserInterface
 {
