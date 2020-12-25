@@ -6,6 +6,7 @@ use App\ArchiveFetcher\ArchiveFetcherInterface;
 use App\SourceFetcher\SourceFetcherInterface;
 use Caldera\LuftApiBundle\Api\ValueApiInterface;
 use Caldera\LuftApiBundle\Model\Value;
+use Carbon\Carbon;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,7 +41,10 @@ class ArchiveFetchCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $valueList = $this->archiveFetcher->fetch();
+        $fromDateTime = new Carbon($input->getArgument('from-date-time'));
+        $untilDateTime = new Carbon($input->getArgument('until-date-time'));
+
+        $valueList = $this->archiveFetcher->fetch($fromDateTime, $untilDateTime);
 
         $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
 

@@ -3,75 +3,36 @@
 namespace App\ArchiveFetcher;
 
 use App\Parser\CsvParserInterface;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use GuzzleHttp\Client;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
 {
-    protected Client $client;
     protected array $csvLinkList = [];
     protected CsvParserInterface $csvParser;
+    protected ArchiveDataLoaderInterface $archiveDataLoader;
 
-    public function __construct(CsvParserInterface $csvParser)
+    public function __construct(CsvParserInterface $csvParser, ArchiveDataLoaderInterface $archiveDataLoader)
     {
         $this->csvParser = $csvParser;
-        $this->client = new Client();
+        $this->archiveDataLoader = $archiveDataLoader;
     }
 
-    protected function checkSensorName(string $csvFilename): bool
-    {
-        $acceptedSensorNames = [
-            'pms5003_sensor',
-            'pms7003_sensor',
-            'sds011_sensor',
-            'sds018_sensor',
-            'sds021_sensor',
-            'ppd42ns_sensor',
-            'hpm_sensor',
-        ];
-        
-        $result = false;
-
-        foreach ($acceptedSensorNames as $acceptedSensorName) {
-            if (false !== strpos($csvFilename, $acceptedSensorName)) {
-                $result = true;
-
-                break;
-            }
-        }
-
-        return $result;
-    }
-
-    public function setCsvLinkList(array $csvLinkList): ArchiveFetcherInterface
-    {
-        $this->csvLinkList = $csvLinkList;
-
-        return $this;
-    }
-
-    public function fetch(callable $callback): array
+    public function fetch(Carbon $fromDateTime, Carbon $untilDateTime): array
     {
         $valueList = [];
 
-        foreach ($this->csvLinkList as $csvLink) {
-            $callback();
+        $date = $fromDateTime->copy();
+        $dayInterval = new CarbonInterval('P1D');
 
-            if (!$this->checkSensorName($csvLink)) {
-                continue;
-            }
+        do {
+            $result = $this->archiveDataLoader->load($date);
 
-            $csvFileContent = $this->archiveSourceFetcher->loadCsvContent($csvLink);
-
-            $valueList = array_merge($this->csvParser->parse($csvFileContent), $valueList);
-        }
+            dump($result);
+            $date = $date->add($dayInterval);
+        } while ($date < $untilDateTime);
 
         return $valueList;
-    }
-
-    protected function query(): string
-    {
-        $result = $this->client->get('https://api.luftdaten.info/static/v2/data.dust.min.json');
-
-        return $result->getBody()->getContents();
     }
 }

@@ -55,6 +55,9 @@
     "luft-jetzt/luft-api-bundle": {
         "version": "dev-main"
     },
+    "nesbot/carbon": {
+        "version": "2.43.0"
+    },
     "nikic/php-parser": {
         "version": "v4.10.2"
     },
@@ -100,11 +103,17 @@
             "bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v5.1.10"
+    },
     "symfony/dependency-injection": {
         "version": "v5.1.8"
     },
     "symfony/deprecation-contracts": {
         "version": "v2.2.0"
+    },
+    "symfony/dom-crawler": {
+        "version": "v5.1.10"
     },
     "symfony/dotenv": {
         "version": "v5.1.8"
@@ -208,6 +217,22 @@
     },
     "symfony/string": {
         "version": "v5.1.8"
+    },
+    "symfony/translation": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "2ad9d2545bce8ca1a863e50e92141f0b9d87ffcd"
+        },
+        "files": [
+            "config/packages/translation.yaml",
+            "translations/.gitignore"
+        ]
+    },
+    "symfony/translation-contracts": {
+        "version": "v2.3.0"
     },
     "symfony/var-dumper": {
         "version": "v5.1.8"

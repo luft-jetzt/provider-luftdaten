@@ -2,8 +2,9 @@
 
 namespace App\ArchiveFetcher;
 
+use Carbon\Carbon;
+
 interface ArchiveFetcherInterface
 {
-    public function setCsvLinkList(array $csvLinkList): ArchiveFetcherInterface;
-    public function fetch(callable $callback): array;
+    public function fetch(Carbon $fromDateTime, Carbon $untilDateTime): array;
 }
