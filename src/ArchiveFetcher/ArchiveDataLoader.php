@@ -28,8 +28,9 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
     public function load(Carbon $date): array
     {
         $indexUri = $this->generateIndexUri($date);
-        $indexPageResponse = $this->client->get($indexUri);
-        $indexPage = $indexPageResponse->getBody()->getContents();
+        //$indexPageResponse = $this->client->get($indexUri);
+        //$indexPage = $indexPageResponse->getBody()->getContents();
+        $indexPage = file_get_contents($indexUri.'/index.html');
 
         $crawler = new Crawler($indexPage);
 
@@ -45,11 +46,13 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
             }
         });
 
-        foreach ($csvUriList as $csvUri) {
-            $csvFileResponse = $this->client->get($csvUri);
-            $csvFileContent = $csvFileResponse->getBody()->getContents();
+        $csvContentList = [];
 
-            $csvContentList = $csvFileContent;
+        foreach ($csvUriList as $csvUri) {
+            //$csvFileResponse = $this->client->get($csvUri);
+            //$csvFileContent = $csvFileResponse->getBody()->getContents();
+            $csvFileContent = file_get_contents($csvUri);
+            $csvContentList[] = $csvFileContent;
         }
 
         return $csvContentList;
@@ -57,7 +60,8 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
 
     protected function generateIndexUri(Carbon $date): string
     {
-        return sprintf('https://archive.sensor.community/%s/', $date->format('Y-m-d'));
+        //return sprintf('https://archive.sensor.community/%s/', $date->format('Y-m-d'));
+        return sprintf('/Volumes/Luftdaten-Archiv/archive.sensor.community/%s/', $date->format('Y-m-d'));
     }
 
     protected function acceptsLink(string $link): bool

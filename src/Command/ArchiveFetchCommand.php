@@ -48,7 +48,7 @@ class ArchiveFetchCommand extends Command
 
         $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
 
-        $this->valueApi->putValues($valueList);
+        //$this->valueApi->putValues($valueList);
 
         if ($output->isVerbose()) {
             $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant'], array_map(function (Value $value) {

@@ -2,64 +2,40 @@
 
 namespace App\Parser;
 
+use Caldera\LuftApiBundle\Model\Value;
+use Carbon\Carbon;
+
 class CsvParser implements CsvParserInterface
 {
-    public function parse(string $csvFileContent): array
+    public function parseRecord(array $csvRecord): array
     {
-        $valueList = [];
+        $pm10Value = $this->createGenericValueFromRecord($csvRecord);
+        $pm10Value
+            ->setPollutant('pm10')
+            ->setValue((float) $csvRecord['P1']);
 
-        $csv = Reader::createFromString(utf8_decode($csvFileContent));
+        $pm25Value = $this->createGenericValueFromRecord($csvRecord);
+        $pm25Value
+            ->setPollutant('pm25')
+            ->setValue((float) $csvRecord['P2']);
 
-        $csv
-            ->setDelimiter(';')
-            ->setHeaderOffset(0);
-
-        if (!$this->checkHeaderColumns($csv->getHeader())) {
-            return [];
-        }
-
-        foreach ($csv as $dataLine) {
-            $dateTime = new \DateTime($dataLine['timestamp']);
-            $stationCode = sprintf('LFTDTN%d', $dataLine['location']);
-
-            $pm10Value = new Value();
-            $pm10Value->setPollutant(PollutantInterface::POLLUTANT_PM10)
-                ->setDateTime($dateTime)
-                ->setStation($stationCode)
-                ->setValue((float) $dataLine['P1']);
-
-            $pm25Value = new Value();
-            $pm25Value->setPollutant(PollutantInterface::POLLUTANT_PM25)
-                ->setDateTime($dateTime)
-                ->setStation($stationCode)
-                ->setValue((float) $dataLine['P2']);
-
-            $valueList[] = $pm10Value;
-            $valueList[] = $pm25Value;
-        }
-
-        return $valueList;
+        return [$pm10Value, $pm25Value];
     }
 
-    protected function checkHeaderColumns(array $headerColumns): bool
+    protected function createGenericValueFromRecord(array $csvRecord): Value
     {
-        $requiredColumns = [
-            'timestamp',
-            'location',
-            'P1',
-            'P2',
-        ];
+        $value = new Value();
 
-        $result = true;
+        $value
+            ->setStationCode($this->generateStationCode((int) $csvRecord['sensor_id']))
+            ->setDateTime(new Carbon($csvRecord['timestamp']))
+        ;
 
-        foreach ($requiredColumns as $requiredColumn) {
-            if (!in_array($requiredColumn, $headerColumns)) {
-                $result = false;
+        return $value;
+    }
 
-                break;
-            }
-        }
-
-        return $result;
+    protected function generateStationCode(int $sensorId): string
+    {
+        return sprintf('LFTDTN%d', $sensorId);
     }
 }

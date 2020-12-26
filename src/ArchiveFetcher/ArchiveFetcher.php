@@ -3,13 +3,14 @@
 namespace App\ArchiveFetcher;
 
 use App\Parser\CsvParserInterface;
+use Caldera\LuftApiBundle\Model\Value;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use GuzzleHttp\Client;
+use League\Csv\Reader;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
 {
-    protected array $csvLinkList = [];
     protected CsvParserInterface $csvParser;
     protected ArchiveDataLoaderInterface $archiveDataLoader;
 
@@ -27,9 +28,25 @@ class ArchiveFetcher implements ArchiveFetcherInterface
         $dayInterval = new CarbonInterval('P1D');
 
         do {
-            $result = $this->archiveDataLoader->load($date);
+            $csvFileContentList = $this->archiveDataLoader->load($date);
 
-            dump($result);
+            foreach ($csvFileContentList as $csvFileContent) {
+                $csvFile = Reader::createFromString($csvFileContent);
+
+                $csvFile->setHeaderOffset(0)->setDelimiter(';');
+
+                foreach ($csvFile->getRecords() as $record) {
+                    $parsedValues = $this->csvParser->parseRecord($record);
+
+                    /** @var Value $parsedValue */
+                    foreach ($parsedValues as $parsedValue) {
+                        if ($parsedValue->getDateTime() >= $fromDateTime && $parsedValue->getDateTime() <= $untilDateTime) {
+                            $valueList[] = $parsedValue;
+                        }
+                    }
+                }
+            }
+
             $date = $date->add($dayInterval);
         } while ($date < $untilDateTime);
 
