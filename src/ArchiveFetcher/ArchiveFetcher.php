@@ -3,7 +3,7 @@
 namespace App\ArchiveFetcher;
 
 use App\Parser\CsvParserInterface;
-use Caldera\LuftApiBundle\Model\Value;
+use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -18,7 +18,7 @@ class ArchiveFetcher implements ArchiveFetcherInterface
         $this->archiveDataLoader = $archiveDataLoader;
     }
 
-    public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime): array
+    public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime, string $pollutant = null): array
     {
         $valueList = [];
 
@@ -30,6 +30,10 @@ class ArchiveFetcher implements ArchiveFetcherInterface
 
             /** @var Value $parsedValue */
             foreach ($parsedValues as $parsedValue) {
+                if ($pollutant && $parsedValue->getPollutant() !== $pollutant) {
+                    continue;
+                }
+
                 if ($parsedValue->getDateTime() >= $fromDateTime && $parsedValue->getDateTime() <= $untilDateTime) {
                     $valueList[] = $parsedValue;
                 }

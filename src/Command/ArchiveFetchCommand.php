@@ -56,13 +56,7 @@ class ArchiveFetchCommand extends Command
         $io->progressStart(count($filenameList));
 
         foreach ($filenameList as $filename) {
-            $valueList = $this->archiveFetcher->fetch($filename, $fromDateTime, $untilDateTime);
-
-            if ($input->getOption('pollutant')) {
-                $valueList = array_filter($valueList, function (Value $value) use ($input): bool {
-                    return $value->getPollutant() === $input->getOption('pollutant');
-                });
-            }
+            $valueList = $this->archiveFetcher->fetch($filename, $fromDateTime, $untilDateTime, $input->getOption('pollutant'));
 
             if ($input->getOption('tag')) {
                 /** @var Value $value */
@@ -83,7 +77,7 @@ class ArchiveFetchCommand extends Command
                 }, $valueList));
             }
 
-            //$this->valueApi->putValues($valueList);
+            $this->valueApi->putValues($valueList);
             $totalValueCount += count($valueList);
             $io->progressAdvance();
         }

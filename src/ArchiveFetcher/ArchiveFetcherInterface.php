@@ -6,5 +6,5 @@ use Carbon\Carbon;
 
 interface ArchiveFetcherInterface
 {
-    public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime): array;
+    public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime, string $pollutant = null): array;
 }
