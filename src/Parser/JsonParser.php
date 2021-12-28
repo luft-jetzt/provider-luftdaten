@@ -2,7 +2,9 @@
 
 namespace App\Parser;
 
-use Caldera\LuftApiBundle\Model\Value;
+use Caldera\LuftModel\Model\Value;
+use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use JMS\Serializer\SerializerInterface;
 
 class JsonParser implements JsonParserInterface
@@ -26,7 +28,7 @@ class JsonParser implements JsonParserInterface
             try {
                 $stationCode = sprintf('LFTDTN%d', $data->location->id);
 
-                $dateTime = new \DateTime($data->timestamp);
+                $dateTime = new Carbon($data->timestamp, new CarbonTimeZone('UTC'));
 
                 $newValueList = $this->getValues($data->sensordatavalues);
 

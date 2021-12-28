@@ -46,22 +46,13 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
             }
         });
 
-        $csvContentList = [];
-
-        foreach ($csvUriList as $csvUri) {
-            //$csvFileResponse = $this->client->get($csvUri);
-            //$csvFileContent = $csvFileResponse->getBody()->getContents();
-            $csvFileContent = file_get_contents($csvUri);
-            $csvContentList[] = $csvFileContent;
-        }
-
-        return $csvContentList;
+        return $csvUriList;
     }
 
     protected function generateIndexUri(Carbon $date): string
     {
         //return sprintf('https://archive.sensor.community/%s/', $date->format('Y-m-d'));
-        return sprintf('/Volumes/Luftdaten-Archiv/archive.sensor.community/%s/', $date->format('Y-m-d'));
+        return sprintf('/volume1/Luftdaten-Archiv/archive.sensor.community/%s/', $date->format('Y-m-d'));
     }
 
     protected function acceptsLink(string $link): bool

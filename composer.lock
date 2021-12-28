@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "50f433881d6a8f44047ddb6ef3a355d6",
+    "content-hash": "601467cb14929ef40f2c2270f4488af2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -616,16 +616,16 @@
         },
         {
             "name": "jms/serializer",
-            "version": "3.17.0",
+            "version": "3.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "6e17603abc16c5b6eed41f51844bc51dda51cf94"
+                "reference": "190f64b051795d447ec755acbfdb1bff330a6707"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/6e17603abc16c5b6eed41f51844bc51dda51cf94",
-                "reference": "6e17603abc16c5b6eed41f51844bc51dda51cf94",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/190f64b051795d447ec755acbfdb1bff330a6707",
+                "reference": "190f64b051795d447ec755acbfdb1bff330a6707",
                 "shasum": ""
             },
             "require": {
@@ -698,7 +698,7 @@
             ],
             "support": {
                 "issues": "https://github.com/schmittjoh/serializer/issues",
-                "source": "https://github.com/schmittjoh/serializer/tree/3.17.0"
+                "source": "https://github.com/schmittjoh/serializer/tree/3.17.1"
             },
             "funding": [
                 {
@@ -706,7 +706,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-12-14T15:01:05+00:00"
+            "time": "2021-12-28T20:59:55+00:00"
         },
         {
             "name": "jms/serializer-bundle",
@@ -880,21 +880,23 @@
         },
         {
             "name": "luft-jetzt/luft-api-bundle",
-            "version": "0.1.1",
+            "version": "0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/luft-jetzt/luft-api-bundle.git",
-                "reference": "ee1962dc9b51b3d42cd0d52b02857e58e5708463"
+                "reference": "0f79016bd7e593925e6dc1a4f2535c052114702c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luft-jetzt/luft-api-bundle/zipball/ee1962dc9b51b3d42cd0d52b02857e58e5708463",
-                "reference": "ee1962dc9b51b3d42cd0d52b02857e58e5708463",
+                "url": "https://api.github.com/repos/luft-jetzt/luft-api-bundle/zipball/0f79016bd7e593925e6dc1a4f2535c052114702c",
+                "reference": "0f79016bd7e593925e6dc1a4f2535c052114702c",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.2",
                 "jms/serializer-bundle": "^3.7",
+                "luft-jetzt/luft-model": ">=0.1",
+                "php": "^7.4||^8.0",
                 "symfony/framework-bundle": "^5.0"
             },
             "type": "library",
@@ -912,9 +914,46 @@
             ],
             "support": {
                 "issues": "https://github.com/luft-jetzt/luft-api-bundle/issues",
-                "source": "https://github.com/luft-jetzt/luft-api-bundle/tree/0.1.1"
+                "source": "https://github.com/luft-jetzt/luft-api-bundle/tree/0.4"
             },
-            "time": "2020-12-19T12:25:30+00:00"
+            "time": "2021-12-21T00:39:09+00:00"
+        },
+        {
+            "name": "luft-jetzt/luft-model",
+            "version": "0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/luft-jetzt/luft-model.git",
+                "reference": "ce4728389e5e13b11affce564e8e14ca55d68dcf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/luft-jetzt/luft-model/zipball/ce4728389e5e13b11affce564e8e14ca55d68dcf",
+                "reference": "ce4728389e5e13b11affce564e8e14ca55d68dcf",
+                "shasum": ""
+            },
+            "require": {
+                "jms/serializer": "^3.10",
+                "php": "^7.4||^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Caldera\\LuftModel\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Malte Huebner",
+                    "email": "maltehuebner@gmx.org"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/luft-jetzt/luft-model/issues",
+                "source": "https://github.com/luft-jetzt/luft-model/tree/0.3"
+            },
+            "time": "2021-12-21T00:37:14+00:00"
         },
         {
             "name": "nesbot/carbon",

@@ -55,6 +55,9 @@
     "luft-jetzt/luft-api-bundle": {
         "version": "dev-main"
     },
+    "luft-jetzt/luft-model": {
+        "version": "0.3"
+    },
     "nesbot/carbon": {
         "version": "2.43.0"
     },
@@ -170,9 +173,6 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
-    },
-    "symfony/http-client-contracts": {
-        "version": "v2.3.1"
     },
     "symfony/http-foundation": {
         "version": "v5.1.8"
