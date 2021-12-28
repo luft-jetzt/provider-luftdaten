@@ -26,7 +26,7 @@ class JsonParser implements JsonParserInterface
             try {
                 $stationCode = sprintf('LFTDTN%d', $data->location->id);
 
-                $dateTime = new \DateTime($data->timestamp);
+                $dateTime = new \DateTime($data->timestamp, new \DateTimeZone('UTC'));
 
                 $newValueList = $this->getValues($data->sensordatavalues);
 
