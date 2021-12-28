@@ -5,8 +5,6 @@ namespace App\ArchiveFetcher;
 use App\Parser\CsvParserInterface;
 use Caldera\LuftApiBundle\Model\Value;
 use Carbon\Carbon;
-use Carbon\CarbonInterval;
-use GuzzleHttp\Client;
 use League\Csv\Reader;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
@@ -20,35 +18,23 @@ class ArchiveFetcher implements ArchiveFetcherInterface
         $this->archiveDataLoader = $archiveDataLoader;
     }
 
-    public function fetch(Carbon $fromDateTime, Carbon $untilDateTime): array
+    public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime): array
     {
         $valueList = [];
 
-        $date = $fromDateTime->copy();
-        $dayInterval = new CarbonInterval('P1D');
+        $csvFile = Reader::createFromPath($filename);
+        $csvFile->setHeaderOffset(0)->setDelimiter(';');
 
-        do {
-            $csvFileContentList = $this->archiveDataLoader->load($date);
+        foreach ($csvFile->getRecords() as $record) {
+            $parsedValues = $this->csvParser->parseRecord($record);
 
-            foreach ($csvFileContentList as $csvFileContent) {
-                $csvFile = Reader::createFromString($csvFileContent);
-
-                $csvFile->setHeaderOffset(0)->setDelimiter(';');
-
-                foreach ($csvFile->getRecords() as $record) {
-                    $parsedValues = $this->csvParser->parseRecord($record);
-
-                    /** @var Value $parsedValue */
-                    foreach ($parsedValues as $parsedValue) {
-                        if ($parsedValue->getDateTime() >= $fromDateTime && $parsedValue->getDateTime() <= $untilDateTime) {
-                            $valueList[] = $parsedValue;
-                        }
-                    }
+            /** @var Value $parsedValue */
+            foreach ($parsedValues as $parsedValue) {
+                if ($parsedValue->getDateTime() >= $fromDateTime && $parsedValue->getDateTime() <= $untilDateTime) {
+                    $valueList[] = $parsedValue;
                 }
             }
-
-            $date = $date->add($dayInterval);
-        } while ($date < $untilDateTime);
+        }
 
         return $valueList;
     }

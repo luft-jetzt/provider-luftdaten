@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\ArchiveFetcher\ArchiveDataLoaderInterface;
 use App\ArchiveFetcher\ArchiveFetcherInterface;
 use App\SourceFetcher\SourceFetcherInterface;
 use Caldera\LuftApiBundle\Api\ValueApiInterface;
@@ -18,12 +19,13 @@ class ArchiveFetchCommand extends Command
     protected static $defaultName = 'luft:archive';
 
     protected ArchiveFetcherInterface $archiveFetcher;
-
+    protected ArchiveDataLoaderInterface $archiveDataLoader;
     protected ValueApiInterface $valueApi;
 
-    public function __construct(string $name = null, ArchiveFetcherInterface $archiveFetcher, ValueApiInterface $valueApi)
+    public function __construct(string $name = null, ArchiveFetcherInterface $archiveFetcher, ValueApiInterface $valueApi, ArchiveDataLoaderInterface $archiveDataLoader)
     {
         $this->archiveFetcher = $archiveFetcher;
+        $this->archiveDataLoader = $archiveDataLoader;
         $this->valueApi = $valueApi;
 
         parent::__construct($name);
@@ -44,24 +46,34 @@ class ArchiveFetchCommand extends Command
         $fromDateTime = new Carbon($input->getArgument('from-date-time'));
         $untilDateTime = new Carbon($input->getArgument('until-date-time'));
 
-        $valueList = $this->archiveFetcher->fetch($fromDateTime, $untilDateTime);
+        $filenameList = $this->archiveDataLoader->load($fromDateTime, $untilDateTime);
 
-        $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
+        $io->success(sprintf('Found %d files from %s until %s', count($filenameList), $fromDateTime->format('Y-m-d'), $untilDateTime->format('Y-m-d')));
+        $totalValueCount = 0;
 
-        //$this->valueApi->putValues($valueList);
+        $io->progressStart(count($filenameList));
 
-        if ($output->isVerbose()) {
-            $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant'], array_map(function (Value $value) {
-                return [
-                    $value->getStationCode(),
-                    $value->getDateTime()->format('Y-m-d H:i:s'),
-                    $value->getValue(),
-                    $value->getPollutant()
-                ];
-            }, $valueList));
+        foreach ($filenameList as $filename) {
+            $valueList = $this->archiveFetcher->fetch($filename, $fromDateTime, $untilDateTime);
+
+            if ($output->isVerbose()) {
+                $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant'], array_map(function (Value $value) {
+                    return [
+                        $value->getStationCode(),
+                        $value->getDateTime()->format('Y-m-d H:i:s'),
+                        $value->getValue(),
+                        $value->getPollutant()
+                    ];
+                }, $valueList));
+            }
+
+            //$this->valueApi->putValues($valueList);
+            $totalValueCount += count($valueList);
+            $io->progressAdvance();
         }
 
-        $io->success(sprintf('Send %d values to Luft api', count($valueList)));
+        $io->success(sprintf('Send %d values to Luft api', $totalValueCount));
+        $io->progressFinish();
 
         return Command::SUCCESS;
     }
