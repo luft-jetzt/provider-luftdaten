@@ -37,6 +37,7 @@ class ArchiveFetchCommand extends Command
             ->addArgument('from-date-time', InputArgument::REQUIRED)
             ->addArgument('until-date-time', InputArgument::REQUIRED)
             ->addOption('tag', null, InputOption::VALUE_REQUIRED)
+            ->addOption('pollutant', null, InputOption::VALUE_REQUIRED)
         ;
     }
 
@@ -57,7 +58,13 @@ class ArchiveFetchCommand extends Command
         foreach ($filenameList as $filename) {
             $valueList = $this->archiveFetcher->fetch($filename, $fromDateTime, $untilDateTime);
 
-            if ($input->hasOption('tag')) {
+            if ($input->getOption('pollutant')) {
+                $valueList = array_filter($valueList, function (Value $value) use ($input): bool {
+                    return $value->getPollutant() === $input->getOption('pollutant');
+                });
+            }
+
+            if ($input->getOption('tag')) {
                 /** @var Value $value */
                 foreach ($valueList as $value) {
                     $value->setTag($input->getOption('tag'));
@@ -65,7 +72,7 @@ class ArchiveFetchCommand extends Command
             }
 
             if ($output->isVerbose()) {
-                $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant', 'Tag'], array_map(function (Value $value) {
+                $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant', 'Tag'], array_map(function (Value $value): array {
                     return [
                         $value->getStationCode(),
                         $value->getDateTime()->format('Y-m-d H:i:s'),
