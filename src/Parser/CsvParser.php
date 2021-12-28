@@ -2,7 +2,7 @@
 
 namespace App\Parser;
 
-use Caldera\LuftApiBundle\Model\Value;
+use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
 
 class CsvParser implements CsvParserInterface
