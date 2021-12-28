@@ -4,13 +4,13 @@ namespace App\Command;
 
 use App\ArchiveFetcher\ArchiveDataLoaderInterface;
 use App\ArchiveFetcher\ArchiveFetcherInterface;
-use App\SourceFetcher\SourceFetcherInterface;
 use Caldera\LuftApiBundle\Api\ValueApiInterface;
 use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -36,6 +36,7 @@ class ArchiveFetchCommand extends Command
         $this->setDescription('Load archive data from luftdaten and push into Luft.jetzt api')
             ->addArgument('from-date-time', InputArgument::REQUIRED)
             ->addArgument('until-date-time', InputArgument::REQUIRED)
+            ->addOption('tag', null, InputOption::VALUE_REQUIRED)
         ;
     }
 
@@ -56,13 +57,21 @@ class ArchiveFetchCommand extends Command
         foreach ($filenameList as $filename) {
             $valueList = $this->archiveFetcher->fetch($filename, $fromDateTime, $untilDateTime);
 
+            if ($input->hasOption('tag')) {
+                /** @var Value $value */
+                foreach ($valueList as $value) {
+                    $value->setTag($input->getOption('tag'));
+                }
+            }
+
             if ($output->isVerbose()) {
-                $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant'], array_map(function (Value $value) {
+                $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant', 'Tag'], array_map(function (Value $value) {
                     return [
                         $value->getStationCode(),
                         $value->getDateTime()->format('Y-m-d H:i:s'),
                         $value->getValue(),
-                        $value->getPollutant()
+                        $value->getPollutant(),
+                        $value->getTag(),
                     ];
                 }, $valueList));
             }
