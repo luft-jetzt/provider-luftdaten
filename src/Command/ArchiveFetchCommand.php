@@ -22,13 +22,13 @@ class ArchiveFetchCommand extends Command
     protected ArchiveDataLoaderInterface $archiveDataLoader;
     protected ValueApiInterface $valueApi;
 
-    public function __construct(string $name = null, ArchiveFetcherInterface $archiveFetcher, ValueApiInterface $valueApi, ArchiveDataLoaderInterface $archiveDataLoader)
+    public function __construct(ArchiveFetcherInterface $archiveFetcher, ValueApiInterface $valueApi, ArchiveDataLoaderInterface $archiveDataLoader)
     {
         $this->archiveFetcher = $archiveFetcher;
         $this->archiveDataLoader = $archiveDataLoader;
         $this->valueApi = $valueApi;
 
-        parent::__construct($name);
+        parent::__construct();
     }
 
     protected function configure(): void
