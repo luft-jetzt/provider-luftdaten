@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider\Luftdaten\SourceFetcher\Parser;
+namespace App\Parser;
 
 interface CsvParserInterface
 {
-    public function parse(string $csvFileContent): array;
+    public function parseRecord(array $csvRecord): array;
 }
