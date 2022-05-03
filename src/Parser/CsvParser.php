@@ -27,7 +27,7 @@ class CsvParser implements CsvParserInterface
         $value = new Value();
 
         $value
-            ->setStationCode($this->generateStationCode((int) $csvRecord['sensor_id']))
+            ->setStationCode($this->generateStationCode((int) $csvRecord['location']))
             ->setDateTime(new Carbon($csvRecord['timestamp']))
         ;
 

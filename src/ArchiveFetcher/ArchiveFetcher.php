@@ -26,7 +26,11 @@ class ArchiveFetcher implements ArchiveFetcherInterface
         $csvFile->setHeaderOffset(0)->setDelimiter(';');
 
         foreach ($csvFile->getRecords() as $record) {
-            $parsedValues = $this->csvParser->parseRecord($record);
+            try {
+                $parsedValues = $this->csvParser->parseRecord($record);
+            } catch (\Exception $exception) {
+                continue;
+            }
 
             /** @var Value $parsedValue */
             foreach ($parsedValues as $parsedValue) {
