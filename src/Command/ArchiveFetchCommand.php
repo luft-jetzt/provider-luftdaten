@@ -25,14 +25,14 @@ class ArchiveFetchCommand extends Command
     protected ProducerInterface $producer;
     protected SerializerInterface $serializer;
 
-    public function __construct(string $name = null, ArchiveFetcherInterface $archiveFetcher, ProducerInterface $producer, ArchiveDataLoaderInterface $archiveDataLoader, SerializerInterface $serializer)
+    public function __construct(ArchiveFetcherInterface $archiveFetcher, ProducerInterface $producer, ArchiveDataLoaderInterface $archiveDataLoader, SerializerInterface $serializer)
     {
         $this->archiveFetcher = $archiveFetcher;
         $this->archiveDataLoader = $archiveDataLoader;
         $this->producer = $producer;
         $this->serializer = $serializer;
 
-        parent::__construct($name);
+        parent::__construct();
     }
 
     protected function configure(): void
