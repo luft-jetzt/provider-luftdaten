@@ -6,5 +6,5 @@ use Carbon\Carbon;
 
 interface ArchiveDataLoaderInterface
 {
-    public function load(Carbon $date): array;
+    public function load(Carbon $fromDateTime, Carbon $untilDateTime): array;
 }

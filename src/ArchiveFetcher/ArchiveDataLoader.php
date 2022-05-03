@@ -25,7 +25,24 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         $this->client = new Client();
     }
 
-    public function load(Carbon $date): array
+    public function load(Carbon $fromDateTime, Carbon $untilDateTime): array
+    {
+        $currentDateTime = $fromDateTime->copy();
+
+        $csvUriList = [];
+
+        do {
+            $newCsvList = $this->processDate($currentDateTime);
+
+            $csvUriList = [...$csvUriList, ...$newCsvList];
+
+            $currentDateTime->addDay();
+        } while ($currentDateTime->format('Y-m-d') <= $untilDateTime->format('Y-m-d')); // ignore hours to make sure we catch every day
+
+        return $csvUriList;
+    }
+
+    protected function processDate(Carbon $date): array
     {
         $indexUri = $this->generateIndexUri($date);
         //$indexPageResponse = $this->client->get($indexUri);
