@@ -9,6 +9,7 @@ use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
 use JMS\Serializer\SerializerInterface;
 use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,28 +17,20 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'luft:archive',
+    description: 'Load archive data from luftdaten and push into Luft.jetzt api'
+)]
 class ArchiveFetchCommand extends Command
 {
-    protected static $defaultName = 'luft:archive';
-
-    protected ArchiveFetcherInterface $archiveFetcher;
-    protected ArchiveDataLoaderInterface $archiveDataLoader;
-    protected ProducerInterface $producer;
-    protected SerializerInterface $serializer;
-
-    public function __construct(ArchiveFetcherInterface $archiveFetcher, ProducerInterface $producer, ArchiveDataLoaderInterface $archiveDataLoader, SerializerInterface $serializer)
+    public function __construct(protected ArchiveFetcherInterface $archiveFetcher, protected ProducerInterface $producer, protected ArchiveDataLoaderInterface $archiveDataLoader, protected SerializerInterface $serializer)
     {
-        $this->archiveFetcher = $archiveFetcher;
-        $this->archiveDataLoader = $archiveDataLoader;
-        $this->producer = $producer;
-        $this->serializer = $serializer;
-
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->setDescription('Load archive data from luftdaten and push into Luft.jetzt api')
+        $this
             ->addArgument('from-date-time', InputArgument::REQUIRED)
             ->addArgument('until-date-time', InputArgument::REQUIRED)
             ->addOption('tag', null, InputOption::VALUE_REQUIRED)

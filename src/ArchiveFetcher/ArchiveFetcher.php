@@ -9,13 +9,9 @@ use League\Csv\Reader;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
 {
-    protected CsvParserInterface $csvParser;
-    protected ArchiveDataLoaderInterface $archiveDataLoader;
-
-    public function __construct(CsvParserInterface $csvParser, ArchiveDataLoaderInterface $archiveDataLoader)
+    public function __construct(protected CsvParserInterface $csvParser, protected ArchiveDataLoaderInterface $archiveDataLoader)
     {
-        $this->csvParser = $csvParser;
-        $this->archiveDataLoader = $archiveDataLoader;
+
     }
 
     public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime, string $pollutant = null): array

@@ -9,12 +9,9 @@ class SourceFetcher implements SourceFetcherInterface
 {
     protected Client $client;
 
-    protected JsonParserInterface $parser;
-
-    public function __construct(JsonParserInterface $parser)
+    public function __construct(protected JsonParserInterface $parser)
     {
         $this->client = new Client();
-        $this->parser = $parser;
     }
 
     public function fetch(): array
