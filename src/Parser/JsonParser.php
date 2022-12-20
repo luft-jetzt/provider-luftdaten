@@ -11,11 +11,9 @@ class JsonParser implements JsonParserInterface
 {
     protected array $stationList = [];
 
-    protected SerializerInterface $serializer;
-
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(protected SerializerInterface $serializer)
     {
-        $this->serializer = $serializer;
+
     }
 
     public function parse(string $dataString): array

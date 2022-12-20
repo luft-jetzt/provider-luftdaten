@@ -14,15 +14,8 @@ class LuftFetchCommand extends Command
 {
     protected static $defaultName = 'luft:fetch';
 
-    protected SourceFetcherInterface $sourceFetcher;
-
-    protected ValueApiInterface $valueApi;
-
-    public function __construct(SourceFetcherInterface $sourceFetcher, ValueApiInterface $valueApi)
+    public function __construct(protected SourceFetcherInterface $sourceFetcher, protected ValueApiInterface $valueApi)
     {
-        $this->sourceFetcher = $sourceFetcher;
-        $this->valueApi = $valueApi;
-
         parent::__construct();
     }
 

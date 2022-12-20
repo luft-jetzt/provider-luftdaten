@@ -9,6 +9,7 @@ use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
 use JMS\Serializer\SerializerInterface;
 use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,18 +21,8 @@ class ArchiveFetchCommand extends Command
 {
     protected static $defaultName = 'luft:archive';
 
-    protected ArchiveFetcherInterface $archiveFetcher;
-    protected ArchiveDataLoaderInterface $archiveDataLoader;
-    protected ProducerInterface $producer;
-    protected SerializerInterface $serializer;
-
-    public function __construct(ArchiveFetcherInterface $archiveFetcher, ProducerInterface $producer, ArchiveDataLoaderInterface $archiveDataLoader, SerializerInterface $serializer)
+    public function __construct(protected ArchiveFetcherInterface $archiveFetcher, protected ProducerInterface $producer, protected ArchiveDataLoaderInterface $archiveDataLoader, protected SerializerInterface $serializer)
     {
-        $this->archiveFetcher = $archiveFetcher;
-        $this->archiveDataLoader = $archiveDataLoader;
-        $this->producer = $producer;
-        $this->serializer = $serializer;
-
         parent::__construct();
     }
 
