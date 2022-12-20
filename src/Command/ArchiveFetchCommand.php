@@ -17,10 +17,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'luft:archive',
+    description: 'Load archive data from luftdaten and push into Luft.jetzt api'
+)]
 class ArchiveFetchCommand extends Command
 {
-    protected static $defaultName = 'luft:archive';
-
     public function __construct(protected ArchiveFetcherInterface $archiveFetcher, protected ProducerInterface $producer, protected ArchiveDataLoaderInterface $archiveDataLoader, protected SerializerInterface $serializer)
     {
         parent::__construct();
@@ -28,7 +30,7 @@ class ArchiveFetchCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Load archive data from luftdaten and push into Luft.jetzt api')
+        $this
             ->addArgument('from-date-time', InputArgument::REQUIRED)
             ->addArgument('until-date-time', InputArgument::REQUIRED)
             ->addOption('tag', null, InputOption::VALUE_REQUIRED)
