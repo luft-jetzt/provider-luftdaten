@@ -3,15 +3,12 @@
 namespace App\SourceFetcher;
 
 use App\Parser\JsonParserInterface;
-use GuzzleHttp\Client;
 
 class SourceFetcher implements SourceFetcherInterface
 {
-    protected Client $client;
-
-    public function __construct(protected JsonParserInterface $parser)
+    public function __construct(private readonly JsonParserInterface $parser)
     {
-        $this->client = new Client();
+
     }
 
     public function fetch(): array
@@ -23,8 +20,6 @@ class SourceFetcher implements SourceFetcherInterface
 
     protected function query(): string
     {
-        $result = $this->client->get('https://api.luftdaten.info/static/v2/data.dust.min.json');
-
-        return $result->getBody()->getContents();
+        return file_get_contents('https://api.luftdaten.info/static/v2/data.dust.min.json');
     }
 }
