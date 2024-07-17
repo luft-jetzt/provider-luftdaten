@@ -5,16 +5,9 @@ namespace App\Parser;
 use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
 use Carbon\CarbonTimeZone;
-use JMS\Serializer\SerializerInterface;
 
 class JsonParser implements JsonParserInterface
 {
-    protected array $stationList = [];
-
-    public function __construct(protected SerializerInterface $serializer)
-    {
-
-    }
 
     public function parse(string $dataString): array
     {

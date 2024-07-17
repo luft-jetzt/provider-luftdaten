@@ -3,14 +3,13 @@
 namespace App\Command;
 
 use App\SourceFetcher\SourceFetcherInterface;
-use Caldera\LuftApiBundle\Api\ValueApiInterface;
-use JMS\Serializer\SerializerInterface;
 use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsCommand(
     name: 'luft:fetch',
@@ -18,7 +17,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LuftFetchCommand extends Command
 {
-    public function __construct(protected SerializerInterface $serializer, protected SourceFetcherInterface $sourceFetcher, protected ValueApiInterface $valueApi, protected ProducerInterface $producer)
+    public function __construct(
+        private readonly SerializerInterface $serializer,
+        private readonly SourceFetcherInterface $sourceFetcher,
+        private readonly ProducerInterface $producer
+    )
     {
         parent::__construct();
     }

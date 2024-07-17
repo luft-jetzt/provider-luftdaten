@@ -4,7 +4,6 @@ namespace App\ArchiveFetcher;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ArchiveDataLoader implements ArchiveDataLoaderInterface
