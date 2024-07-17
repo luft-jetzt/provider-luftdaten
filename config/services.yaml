@@ -26,3 +26,7 @@ services:
     App\Command\ArchiveFetchCommand:
         arguments:
             $producer: '@old_sound_rabbit_mq.luft_value_producer'
+
+    App\Command\LuftFetchCommand:
+        arguments:
+            $producer: '@old_sound_rabbit_mq.luft_value_producer'
