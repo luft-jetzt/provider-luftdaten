@@ -8,7 +8,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "jms/serializer-bundle": "^5.0",
         "league/csv": "^9.6",
-        "luft-jetzt/luft-api-bundle": "^0.6",
+        "luft-jetzt/luft-api-bundle": "*",
         "nesbot/carbon": "^3.0@dev",
         "php-amqplib/rabbitmq-bundle": "^2.11",
         "symfony/console": "^7.0",
