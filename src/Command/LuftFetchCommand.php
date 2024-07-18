@@ -3,12 +3,12 @@
 namespace App\Command;
 
 use App\SourceFetcher\SourceFetcherInterface;
-use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsCommand(
@@ -20,7 +20,7 @@ class LuftFetchCommand extends Command
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly SourceFetcherInterface $sourceFetcher,
-        private readonly ProducerInterface $producer
+        private readonly MessageBusInterface $messageBus
     )
     {
         parent::__construct();
@@ -35,8 +35,7 @@ class LuftFetchCommand extends Command
         $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
 
         foreach ($valueList as $value) {
-            $this->producer->publish($this->serializer->serialize($value, 'json'));
-
+            $this->messageBus->dispatch($value);
         }
 
         if ($output->isVerbose()) {
@@ -50,7 +49,7 @@ class LuftFetchCommand extends Command
             }, $valueList));
         }
 
-        $io->success(sprintf('Send %d values to Luft api', count($valueList)));
+        $io->success(sprintf('Send %d values to Luft queue', count($valueList)));
 
         return Command::SUCCESS;
     }

@@ -1,8 +1,0 @@
-old_sound_rabbit_mq:
-    connections:
-        default:
-            url: '%env(RABBITMQ_URL)%'
-    producers:
-        luft_value:
-            connection:       default
-            exchange_options: { name: 'luft_value', type: direct }
