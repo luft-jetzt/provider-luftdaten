@@ -18,7 +18,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 class LuftFetchCommand extends Command
 {
     public function __construct(
-        private readonly SerializerInterface $serializer,
         private readonly SourceFetcherInterface $sourceFetcher,
         private readonly MessageBusInterface $messageBus
     )
