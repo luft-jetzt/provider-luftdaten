@@ -4,8 +4,7 @@ namespace App\Command;
 
 use App\SourceFetcher\SourceFetcherInterface;
 use Caldera\LuftApiBundle\Api\ValueApiInterface;
-use JMS\Serializer\SerializerInterface;
-use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
+use Caldera\LuftModel\Model\Value;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LuftFetchCommand extends Command
 {
-    public function __construct(protected SerializerInterface $serializer, protected SourceFetcherInterface $sourceFetcher, protected ValueApiInterface $valueApi, protected ProducerInterface $producer)
+    public function __construct(protected SourceFetcherInterface $sourceFetcher, protected ValueApiInterface $valueApi)
     {
         parent::__construct();
     }
@@ -31,11 +30,6 @@ class LuftFetchCommand extends Command
 
         $io->success(sprintf('Fetched %d values from Luftdaten', count($valueList)));
 
-        foreach ($valueList as $value) {
-            $this->producer->publish($this->serializer->serialize($value, 'json'));
-
-        }
-
         if ($output->isVerbose()) {
             $io->table(['StationCode', 'DateTime', 'Value', 'Pollutant'], array_map(function (Value $value) {
                 return [
@@ -46,6 +40,8 @@ class LuftFetchCommand extends Command
                 ];
             }, $valueList));
         }
+
+        $this->valueApi->putValues($valueList);
 
         $io->success(sprintf('Send %d values to Luft api', count($valueList)));
 

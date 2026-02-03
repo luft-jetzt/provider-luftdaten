@@ -7,8 +7,6 @@ use App\ArchiveFetcher\ArchiveFetcherInterface;
 use Caldera\LuftApiBundle\Api\ValueApiInterface;
 use Caldera\LuftModel\Model\Value;
 use Carbon\Carbon;
-use JMS\Serializer\SerializerInterface;
-use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,7 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class ArchiveFetchCommand extends Command
 {
-    public function __construct(protected ArchiveFetcherInterface $archiveFetcher, protected ProducerInterface $producer, protected ArchiveDataLoaderInterface $archiveDataLoader, protected SerializerInterface $serializer)
+    public function __construct(protected ArchiveFetcherInterface $archiveFetcher, protected ArchiveDataLoaderInterface $archiveDataLoader, protected ValueApiInterface $valueApi)
     {
         parent::__construct();
     }
@@ -74,9 +72,7 @@ class ArchiveFetchCommand extends Command
                 }, $valueList));
             }
 
-            foreach ($valueList as $value) {
-                $this->producer->publish($this->serializer->serialize($value, 'json'));
-            }
+            $this->valueApi->putValues($valueList);
 
             $totalValueCount += count($valueList);
             $io->progressAdvance();
