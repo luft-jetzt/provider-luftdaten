@@ -20,6 +20,10 @@ class JsonParser implements JsonParserInterface
     {
         $dataList = json_decode($dataString);
 
+        if (!is_array($dataList)) {
+            throw new \RuntimeException(sprintf('Failed to parse JSON response: %s', json_last_error_msg()));
+        }
+
         $valueList = [];
 
         foreach ($dataList as $data) {
