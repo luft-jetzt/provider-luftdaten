@@ -2,12 +2,10 @@
 
 namespace App\ArchiveFetcher;
 
-use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ArchiveDataLoader implements ArchiveDataLoaderInterface
 {
-    protected Client $client;
     protected array $sensorList = [
         'pms5003_sensor',
         'pms7003_sensor',
@@ -18,9 +16,10 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         'hpm_sensor',
     ];
 
-    public function __construct()
-    {
-        $this->client = new Client();
+    public function __construct(
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%env(ARCHIVE_BASE_PATH)%')]
+        protected string $archiveBasePath,
+    ) {
     }
 
     public function load(\DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime): array
@@ -64,7 +63,7 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
 
     protected function generateIndexUri(\DateTimeInterface $date): string
     {
-        return sprintf('/volume1/Luftdaten-Archiv/archive.sensor.community/%s/', $date->format('Y-m-d'));
+        return sprintf('%s/%s/', rtrim($this->archiveBasePath, '/'), $date->format('Y-m-d'));
     }
 
     protected function acceptsLink(string $link): bool
