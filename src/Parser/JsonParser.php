@@ -5,24 +5,21 @@ declare(strict_types=1);
 namespace App\Parser;
 
 use Caldera\LuftModel\Model\Value;
-use JMS\Serializer\SerializerInterface;
+use Psr\Log\LoggerInterface;
 
 class JsonParser implements JsonParserInterface
 {
-    /** @var array<string, mixed> */
-    protected array $stationList = [];
-
-    public function __construct(protected SerializerInterface $serializer)
+    public function __construct(protected LoggerInterface $logger)
     {
     }
 
     /** @return Value[] */
     public function parse(string $dataString): array
     {
-        $dataList = json_decode($dataString);
+        $dataList = json_decode($dataString, false, 512, \JSON_THROW_ON_ERROR);
 
         if (!is_array($dataList)) {
-            throw new \RuntimeException(sprintf('Failed to parse JSON response: %s', json_last_error_msg()));
+            throw new \RuntimeException('Failed to parse JSON response: expected array');
         }
 
         $valueList = [];
@@ -44,7 +41,7 @@ class JsonParser implements JsonParserInterface
 
                 $valueList = array_merge($valueList, $newValueList);
             } catch (\Exception $e) {
-                var_dump($e);
+                $this->logger->warning('Failed to parse sensor data entry', ['exception' => $e]);
             }
         }
 
