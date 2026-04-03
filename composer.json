@@ -5,7 +5,7 @@
         "php": "^8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "guzzlehttp/guzzle": "^7.2",
+        "symfony/http-client": "^7.4",
         "jms/serializer-bundle": "^5.0",
         "league/csv": "^9.28",
         "luft-jetzt/luft-api-bundle": "*",
