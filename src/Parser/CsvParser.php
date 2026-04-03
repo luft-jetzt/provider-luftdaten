@@ -3,7 +3,6 @@
 namespace App\Parser;
 
 use Caldera\LuftModel\Model\Value;
-use Carbon\Carbon;
 
 class CsvParser implements CsvParserInterface
 {
@@ -28,7 +27,7 @@ class CsvParser implements CsvParserInterface
 
         $value
             ->setStationCode($this->generateStationCode((int) $csvRecord['location']))
-            ->setDateTime(new Carbon($csvRecord['timestamp']))
+            ->setDateTime(new \DateTimeImmutable($csvRecord['timestamp']))
         ;
 
         return $value;

@@ -9,7 +9,6 @@
         "jms/serializer-bundle": "^5.0",
         "league/csv": "^9.28",
         "luft-jetzt/luft-api-bundle": "*",
-        "nesbot/carbon": "^3.0@dev",
         "symfony/console": "^7.4",
         "symfony/css-selector": "^7.4",
         "symfony/dom-crawler": "^7.4",

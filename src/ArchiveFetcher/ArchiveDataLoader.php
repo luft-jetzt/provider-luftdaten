@@ -2,9 +2,7 @@
 
 namespace App\ArchiveFetcher;
 
-use Carbon\Carbon;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ArchiveDataLoader implements ArchiveDataLoaderInterface
@@ -25,9 +23,9 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         $this->client = new Client();
     }
 
-    public function load(Carbon $fromDateTime, Carbon $untilDateTime): array
+    public function load(\DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime): array
     {
-        $currentDateTime = $fromDateTime->copy();
+        $currentDateTime = \DateTimeImmutable::createFromInterface($fromDateTime);
 
         $csvUriList = [];
 
@@ -36,17 +34,15 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
 
             $csvUriList = [...$csvUriList, ...$newCsvList];
 
-            $currentDateTime->addDay();
-        } while ($currentDateTime->format('Y-m-d') <= $untilDateTime->format('Y-m-d')); // ignore hours to make sure we catch every day
+            $currentDateTime = $currentDateTime->modify('+1 day');
+        } while ($currentDateTime->format('Y-m-d') <= $untilDateTime->format('Y-m-d'));
 
         return $csvUriList;
     }
 
-    protected function processDate(Carbon $date): array
+    protected function processDate(\DateTimeInterface $date): array
     {
         $indexUri = $this->generateIndexUri($date);
-        //$indexPageResponse = $this->client->get($indexUri);
-        //$indexPage = $indexPageResponse->getBody()->getContents();
         $indexPage = file_get_contents($indexUri.'/index.html');
 
         $crawler = new Crawler($indexPage);
@@ -66,9 +62,8 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         return $csvUriList;
     }
 
-    protected function generateIndexUri(Carbon $date): string
+    protected function generateIndexUri(\DateTimeInterface $date): string
     {
-        //return sprintf('https://archive.sensor.community/%s/', $date->format('Y-m-d'));
         return sprintf('/volume1/Luftdaten-Archiv/archive.sensor.community/%s/', $date->format('Y-m-d'));
     }
 
