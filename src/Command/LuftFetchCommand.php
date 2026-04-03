@@ -19,6 +19,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LuftFetchCommand extends Command
 {
+    private const int BATCH_SIZE = 1000;
+
     public function __construct(protected SourceFetcherInterface $sourceFetcher, protected ValueApiInterface $valueApi)
     {
         parent::__construct();
@@ -43,9 +45,18 @@ class LuftFetchCommand extends Command
             }, $valueList));
         }
 
-        $this->valueApi->putValues($valueList);
+        $batches = array_chunk($valueList, self::BATCH_SIZE);
 
-        $io->success(sprintf('Send %d values to Luft api', count($valueList)));
+        $io->progressStart(count($batches));
+
+        foreach ($batches as $batch) {
+            $this->valueApi->putValues($batch);
+            $io->progressAdvance();
+        }
+
+        $io->progressFinish();
+
+        $io->success(sprintf('Sent %d values in %d batches to Luft api', count($valueList), count($batches)));
 
         return Command::SUCCESS;
     }
