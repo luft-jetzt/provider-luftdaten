@@ -73,12 +73,12 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
 
     protected function acceptsLink(string $link): bool
     {
-        if (false === strpos($link, '.csv')) {
+        if (!str_contains($link, '.csv')) {
             return false;
         }
 
         foreach ($this->sensorList as $sensorName) {
-            if (false !== strpos($link, $sensorName)) {
+            if (str_contains($link, $sensorName)) {
                 return true;
             }
         }

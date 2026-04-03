@@ -6,7 +6,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/http-client": "^7.4",
-        "jms/serializer-bundle": "^5.0",
         "league/csv": "^9.28",
         "luft-jetzt/luft-api-bundle": "*",
         "symfony/console": "^7.4",
