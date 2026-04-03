@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\ArchiveFetcher;
 
@@ -6,6 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class ArchiveDataLoader implements ArchiveDataLoaderInterface
 {
+    /** @var string[] */
     protected array $sensorList = [
         'pms5003_sensor',
         'pms7003_sensor',
@@ -22,6 +25,7 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
     ) {
     }
 
+    /** @return string[] */
     public function load(\DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime): array
     {
         $currentDateTime = \DateTimeImmutable::createFromInterface($fromDateTime);
@@ -39,6 +43,7 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         return $csvUriList;
     }
 
+    /** @return string[] */
     protected function processDate(\DateTimeInterface $date): array
     {
         $indexUri = $this->generateIndexUri($date);
@@ -68,12 +73,12 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
 
     protected function acceptsLink(string $link): bool
     {
-        if (strpos($link, '.csv') === false) {
+        if (false === strpos($link, '.csv')) {
             return false;
         }
 
         foreach ($this->sensorList as $sensorName) {
-            if (strpos($link, $sensorName) !== false) {
+            if (false !== strpos($link, $sensorName)) {
                 return true;
             }
         }
