@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Parser;
 
@@ -7,13 +9,14 @@ use JMS\Serializer\SerializerInterface;
 
 class JsonParser implements JsonParserInterface
 {
+    /** @var array<string, mixed> */
     protected array $stationList = [];
 
     public function __construct(protected SerializerInterface $serializer)
     {
-
     }
 
+    /** @return Value[] */
     public function parse(string $dataString): array
     {
         $dataList = json_decode($dataString);
@@ -28,7 +31,7 @@ class JsonParser implements JsonParserInterface
             try {
                 $stationCode = sprintf('LFTDTN%d', $data->location->id);
 
-                $dateTime = new \DateTimeImmutable($data->timestamp, new \DateTimeZone('UTC'));
+                $dateTime = new \DateTime($data->timestamp, new \DateTimeZone('UTC'));
 
                 $newValueList = $this->getValues($data->sensordatavalues);
 
@@ -48,6 +51,11 @@ class JsonParser implements JsonParserInterface
         return $valueList;
     }
 
+    /**
+     * @param array<int, object> $sensorDataValues
+     *
+     * @return Value[]
+     */
     protected function getValues(array $sensorDataValues): array
     {
         $valueList = [];
@@ -56,9 +64,9 @@ class JsonParser implements JsonParserInterface
             $value = new Value();
             $value->setValue((float) $sensorDataValue->value);
 
-            if ($sensorDataValue->value_type === 'P1') {
+            if ('P1' === $sensorDataValue->value_type) {
                 $value->setPollutant('pm10');
-            } elseif ($sensorDataValue->value_type === 'P2') {
+            } elseif ('P2' === $sensorDataValue->value_type) {
                 $value->setPollutant('pm25');
             } else {
                 continue;

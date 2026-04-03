@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\SourceFetcher;
 
 use App\Parser\JsonParserInterface;
+use Caldera\LuftModel\Model\Value;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SourceFetcher implements SourceFetcherInterface
@@ -13,6 +16,7 @@ class SourceFetcher implements SourceFetcherInterface
     ) {
     }
 
+    /** @return Value[] */
     public function fetch(): array
     {
         $response = $this->httpClient->request('GET', 'https://api.luftdaten.info/static/v2/data.dust.min.json');

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Command;
 
@@ -36,7 +38,7 @@ class LuftFetchCommand extends Command
                     $value->getStationCode(),
                     $value->getDateTime()->format('Y-m-d H:i:s'),
                     $value->getValue(),
-                    $value->getPollutant()
+                    $value->getPollutant(),
                 ];
             }, $valueList));
         }

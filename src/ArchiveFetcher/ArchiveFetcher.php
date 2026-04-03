@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\ArchiveFetcher;
 
@@ -10,10 +12,12 @@ class ArchiveFetcher implements ArchiveFetcherInterface
 {
     public function __construct(protected CsvParserInterface $csvParser, protected ArchiveDataLoaderInterface $archiveDataLoader)
     {
-
     }
 
-    public function fetch(string $filename, \DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime, string $pollutant = null): array
+    /**
+     * @return Value[]
+     */
+    public function fetch(string $filename, \DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime, ?string $pollutant = null): array
     {
         $valueList = [];
 
