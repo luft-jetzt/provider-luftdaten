@@ -4,7 +4,6 @@ namespace App\ArchiveFetcher;
 
 use App\Parser\CsvParserInterface;
 use Caldera\LuftModel\Model\Value;
-use Carbon\Carbon;
 use League\Csv\Reader;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
@@ -14,7 +13,7 @@ class ArchiveFetcher implements ArchiveFetcherInterface
 
     }
 
-    public function fetch(string $filename, Carbon $fromDateTime, Carbon $untilDateTime, string $pollutant = null): array
+    public function fetch(string $filename, \DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime, string $pollutant = null): array
     {
         $valueList = [];
 

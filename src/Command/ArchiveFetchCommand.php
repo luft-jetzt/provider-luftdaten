@@ -6,7 +6,6 @@ use App\ArchiveFetcher\ArchiveDataLoaderInterface;
 use App\ArchiveFetcher\ArchiveFetcherInterface;
 use Caldera\LuftApiBundle\Api\ValueApiInterface;
 use Caldera\LuftModel\Model\Value;
-use Carbon\Carbon;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,8 +39,8 @@ class ArchiveFetchCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $fromDateTime = new Carbon($input->getArgument('from-date-time'));
-        $untilDateTime = new Carbon($input->getArgument('until-date-time'));
+        $fromDateTime = new \DateTimeImmutable($input->getArgument('from-date-time'));
+        $untilDateTime = new \DateTimeImmutable($input->getArgument('until-date-time'));
 
         $filenameList = $this->archiveDataLoader->load($fromDateTime, $untilDateTime);
 
