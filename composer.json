@@ -7,7 +7,7 @@
         "ext-iconv": "*",
         "guzzlehttp/guzzle": "^7.2",
         "jms/serializer-bundle": "^5.0",
-        "league/csv": "^9.6",
+        "league/csv": "^9.28",
         "luft-jetzt/luft-api-bundle": "*",
         "nesbot/carbon": "^3.0@dev",
         "symfony/console": "^7.4",
