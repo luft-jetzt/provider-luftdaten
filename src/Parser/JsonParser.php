@@ -40,7 +40,7 @@ class JsonParser implements JsonParserInterface
                 }
 
                 $valueList = array_merge($valueList, $newValueList);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->warning('Failed to parse sensor data entry', ['exception' => $e]);
             }
         }
