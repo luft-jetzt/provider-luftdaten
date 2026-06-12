@@ -58,6 +58,11 @@ class JsonParser implements JsonParserInterface
         $valueList = [];
 
         foreach ($sensorDataValues as $sensorDataValue) {
+            // Remote-Wert defensiv prüfen: nur numerische, endliche Werte übernehmen.
+            if (!is_numeric($sensorDataValue->value) || !is_finite((float) $sensorDataValue->value)) {
+                continue;
+            }
+
             $value = new Value();
             $value->setValue((float) $sensorDataValue->value);
 

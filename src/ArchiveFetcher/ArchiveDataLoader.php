@@ -49,7 +49,14 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         $indexUri = $this->generateIndexUri($date);
         $indexPage = file_get_contents($indexUri.'/index.html');
 
-        $crawler = new Crawler($indexPage);
+        if (false === $indexPage) {
+            return [];
+        }
+
+        // Inhalt explizit als HTML parsen (kein Auto-Sniffing), damit eine mit
+        // <?xml beginnende Antwort nie versehentlich den XML-Pfad triggert.
+        $crawler = new Crawler();
+        $crawler->addHtmlContent($indexPage);
 
         $csvUriList = [];
 
