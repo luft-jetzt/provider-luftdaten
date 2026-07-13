@@ -21,7 +21,7 @@ class ArchiveFetcher implements ArchiveFetcherInterface
     {
         $valueList = [];
 
-        $csvFile = Reader::createFromPath($filename);
+        $csvFile = Reader::from($filename, 'r');
         $csvFile->setHeaderOffset(0)->setDelimiter(';');
 
         foreach ($csvFile->getRecords() as $record) {
