@@ -10,7 +10,7 @@ use League\Csv\Reader;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
 {
-    public function __construct(protected CsvParserInterface $csvParser, protected ArchiveDataLoaderInterface $archiveDataLoader)
+    public function __construct(protected CsvParserInterface $csvParser)
     {
     }
 
