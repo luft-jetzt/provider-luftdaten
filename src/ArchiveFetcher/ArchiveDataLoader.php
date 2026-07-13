@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\ArchiveFetcher;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ArchiveDataLoader implements ArchiveDataLoaderInterface
@@ -20,8 +22,9 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
     ];
 
     public function __construct(
-        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%env(ARCHIVE_BASE_PATH)%')]
+        #[Autowire('%env(ARCHIVE_BASE_PATH)%')]
         protected string $archiveBasePath,
+        protected LoggerInterface $logger,
     ) {
     }
 
@@ -47,7 +50,17 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
     protected function processDate(\DateTimeInterface $date): array
     {
         $indexUri = $this->generateIndexUri($date);
-        $indexPage = file_get_contents($indexUri.'/index.html');
+        $indexPage = @file_get_contents($indexUri.'/index.html');
+
+        if (false === $indexPage) {
+            // A missing archive day must not abort a multi-day run: log and skip it.
+            $this->logger->warning('Archive index not found, skipping day', [
+                'date' => $date->format('Y-m-d'),
+                'index' => $indexUri.'/index.html',
+            ]);
+
+            return [];
+        }
 
         $crawler = new Crawler($indexPage);
 

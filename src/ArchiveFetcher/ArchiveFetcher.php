@@ -7,10 +7,11 @@ namespace App\ArchiveFetcher;
 use App\Parser\CsvParserInterface;
 use Caldera\LuftModel\Model\Value;
 use League\Csv\Reader;
+use Psr\Log\LoggerInterface;
 
 class ArchiveFetcher implements ArchiveFetcherInterface
 {
-    public function __construct(protected CsvParserInterface $csvParser, protected ArchiveDataLoaderInterface $archiveDataLoader)
+    public function __construct(protected CsvParserInterface $csvParser, protected ArchiveDataLoaderInterface $archiveDataLoader, protected LoggerInterface $logger)
     {
     }
 
@@ -20,14 +21,23 @@ class ArchiveFetcher implements ArchiveFetcherInterface
     public function fetch(string $filename, \DateTimeInterface $fromDateTime, \DateTimeInterface $untilDateTime, ?string $pollutant = null): array
     {
         $valueList = [];
+        $discardedCount = 0;
 
         $csvFile = Reader::createFromPath($filename);
         $csvFile->setHeaderOffset(0)->setDelimiter(';');
 
-        foreach ($csvFile->getRecords() as $record) {
+        foreach ($csvFile->getRecords() as $offset => $record) {
             try {
                 $parsedValues = $this->csvParser->parseRecord($record);
             } catch (\Exception $exception) {
+                ++$discardedCount;
+
+                $this->logger->debug('Skipped unparseable archive CSV row', [
+                    'file' => $filename,
+                    'row' => $offset,
+                    'exception' => $exception->getMessage(),
+                ]);
+
                 continue;
             }
 
@@ -41,6 +51,14 @@ class ArchiveFetcher implements ArchiveFetcherInterface
                     $valueList[] = $parsedValue;
                 }
             }
+        }
+
+        if ($discardedCount > 0) {
+            $this->logger->warning('Discarded unparseable rows while reading archive file', [
+                'file' => $filename,
+                'discarded' => $discardedCount,
+                'kept' => count($valueList),
+            ]);
         }
 
         return $valueList;
