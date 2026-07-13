@@ -6,6 +6,7 @@ namespace App\Tests\ArchiveFetcher;
 
 use App\ArchiveFetcher\ArchiveDataLoader;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class ArchiveDataLoaderTest extends TestCase
 {
@@ -84,9 +85,23 @@ class ArchiveDataLoaderTest extends TestCase
         }
     }
 
+    public function testLoadSkipsMissingDaysWithoutThrowing(): void
+    {
+        // No index files exist under this path, so every day is "missing".
+        // Previously new Crawler(false) raised a TypeError and aborted the run.
+        $loader = $this->createLoader(sys_get_temp_dir().'/does-not-exist-'.uniqid());
+
+        $result = $loader->load(
+            new \DateTimeImmutable('2024-01-01'),
+            new \DateTimeImmutable('2024-01-03'),
+        );
+
+        $this->assertSame([], $result);
+    }
+
     private function createLoader(string $basePath = '/test/archive'): ArchiveDataLoader
     {
-        return new ArchiveDataLoader($basePath);
+        return new ArchiveDataLoader($basePath, new NullLogger());
     }
 
     private function invokeAcceptsLink(ArchiveDataLoader $loader, string $link): bool
