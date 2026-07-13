@@ -39,3 +39,14 @@ jobs:
           php-version: '8.5'
       - run: composer install --no-progress
       - run: vendor/bin/php-cs-fixer check --diff
+
+  audit:
+    name: Composer Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+      - run: composer install --no-progress
+      - run: composer audit
