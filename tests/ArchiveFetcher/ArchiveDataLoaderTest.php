@@ -44,6 +44,14 @@ class ArchiveDataLoaderTest extends TestCase
         $this->assertFalse($this->invokeAcceptsLink($loader, 'random_data.csv'));
     }
 
+    public function testRejectsLinkWithPathTraversal(): void
+    {
+        $loader = $this->createLoader();
+
+        $this->assertFalse($this->invokeAcceptsLink($loader, '../sds011_sensor_12345.csv'));
+        $this->assertFalse($this->invokeAcceptsLink($loader, 'sub/dir/sds011_sensor_12345.csv'));
+    }
+
     public function testGenerateIndexUriFormatsDateCorrectly(): void
     {
         $loader = $this->createLoader('/archive/path');

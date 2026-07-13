@@ -95,6 +95,32 @@ class JsonParserTest extends TestCase
         $this->assertCount(0, $values);
     }
 
+    public function testParseSkipsImplausibleValues(): void
+    {
+        $data = $this->createSensorData();
+        $data->sensordatavalues = [
+            (object) ['value_type' => 'P1', 'value' => '-5.0'],   // negative
+            (object) ['value_type' => 'P2', 'value' => '1e400'],  // Inf
+        ];
+        $json = json_encode([$data]);
+
+        $values = $this->parser->parse($json);
+
+        $this->assertCount(0, $values);
+    }
+
+    public function testParseKeepsPlausibleAndDropsImplausibleValues(): void
+    {
+        $data = $this->createSensorData(p1Value: '42.0', p2Value: '999999');
+        $json = json_encode([$data]);
+
+        $values = $this->parser->parse($json);
+
+        $this->assertCount(1, $values);
+        $this->assertSame('pm10', $values[0]->getPollutant());
+        $this->assertSame(42.0, $values[0]->getValue());
+    }
+
     public function testParseWithEmptyArray(): void
     {
         $values = $this->parser->parse('[]');

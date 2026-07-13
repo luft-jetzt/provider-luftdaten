@@ -74,6 +74,17 @@ class CsvParserTest extends TestCase
         $this->assertSame(0.0, $values[1]->getValue());
     }
 
+    public function testParseRecordSkipsImplausiblePm10(): void
+    {
+        $record = $this->createValidRecord(['P1' => '-3.0', 'P2' => '12.3']);
+
+        $values = $this->parser->parseRecord($record);
+
+        $this->assertCount(1, $values);
+        $this->assertSame('pm25', $values[0]->getPollutant());
+        $this->assertSame(12.3, $values[0]->getValue());
+    }
+
     /**
      * @param array<string, string> $overrides
      *

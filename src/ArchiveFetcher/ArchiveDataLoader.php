@@ -49,14 +49,17 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
         $indexUri = $this->generateIndexUri($date);
         $indexPage = file_get_contents($indexUri.'/index.html');
 
-        $crawler = new Crawler($indexPage);
+        // Parse the index explicitly as HTML so a stray "<?xml" response can never
+        // route the crawler down the XML parsing path.
+        $crawler = new Crawler();
+        $crawler->addHtmlContent((string) $indexPage);
 
         $csvUriList = [];
 
         $crawler->filter('a')->each(function (Crawler $element) use (&$csvUriList, $indexUri): void {
             $href = $element->attr('href');
 
-            if ($this->acceptsLink($href)) {
+            if (null !== $href && $this->acceptsLink($href)) {
                 $csvUri = sprintf('%s%s', $indexUri, $href);
 
                 $csvUriList[] = $csvUri;
@@ -73,7 +76,10 @@ class ArchiveDataLoader implements ArchiveDataLoaderInterface
 
     protected function acceptsLink(string $link): bool
     {
-        if (!str_contains($link, '.csv')) {
+        // Only accept plain CSV file names from the index. This rejects any href
+        // containing path separators or "../" traversal before it is ever
+        // concatenated into a path passed to Reader::createFromPath().
+        if (1 !== preg_match('/^[A-Za-z0-9_.-]+\.csv$/', $link)) {
             return false;
         }
 

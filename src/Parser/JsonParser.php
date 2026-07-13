@@ -58,20 +58,42 @@ class JsonParser implements JsonParserInterface
         $valueList = [];
 
         foreach ($sensorDataValues as $sensorDataValue) {
-            $value = new Value();
-            $value->setValue((float) $sensorDataValue->value);
-
             if ('P1' === $sensorDataValue->value_type) {
-                $value->setPollutant('pm10');
+                $pollutant = 'pm10';
             } elseif ('P2' === $sensorDataValue->value_type) {
-                $value->setPollutant('pm25');
+                $pollutant = 'pm25';
             } else {
                 continue;
             }
+
+            $rawValue = (float) $sensorDataValue->value;
+
+            if (!$this->isPlausibleValue($rawValue)) {
+                $this->logger->warning('Discarded implausible sensor value', [
+                    'pollutant' => $pollutant,
+                    'value' => $sensorDataValue->value,
+                ]);
+
+                continue;
+            }
+
+            $value = new Value();
+            $value
+                ->setValue($rawValue)
+                ->setPollutant($pollutant);
 
             $valueList[] = $value;
         }
 
         return $valueList;
+    }
+
+    /**
+     * Guards against corrupt or hostile upstream readings (NaN/Inf, negative or
+     * absurdly high particulate concentrations).
+     */
+    protected function isPlausibleValue(float $value): bool
+    {
+        return is_finite($value) && $value >= 0.0 && $value <= 10000.0;
     }
 }

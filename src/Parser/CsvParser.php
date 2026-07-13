@@ -15,17 +15,33 @@ class CsvParser implements CsvParserInterface
      */
     public function parseRecord(array $csvRecord): array
     {
-        $pm10Value = $this->createGenericValueFromRecord($csvRecord);
-        $pm10Value
-            ->setPollutant('pm10')
-            ->setValue((float) $csvRecord['P1']);
+        $valueList = [];
 
-        $pm25Value = $this->createGenericValueFromRecord($csvRecord);
-        $pm25Value
-            ->setPollutant('pm25')
-            ->setValue((float) $csvRecord['P2']);
+        foreach (['pm10' => 'P1', 'pm25' => 'P2'] as $pollutant => $column) {
+            $rawValue = (float) $csvRecord[$column];
 
-        return [$pm10Value, $pm25Value];
+            if (!$this->isPlausibleValue($rawValue)) {
+                continue;
+            }
+
+            $value = $this->createGenericValueFromRecord($csvRecord);
+            $value
+                ->setPollutant($pollutant)
+                ->setValue($rawValue);
+
+            $valueList[] = $value;
+        }
+
+        return $valueList;
+    }
+
+    /**
+     * Guards against corrupt archive readings (NaN/Inf, negative or absurdly high
+     * particulate concentrations).
+     */
+    protected function isPlausibleValue(float $value): bool
+    {
+        return is_finite($value) && $value >= 0.0 && $value <= 10000.0;
     }
 
     /** @param array<string, string> $csvRecord */
